@@ -92,8 +92,8 @@ module.exports = {
     contentBase: path.resolve(__dirname, 'src'),// 配置开发服务运行时的文件根目录
     host: 'localhost',// 开发服务器监听的主机地址
     compress: true,   // 开发服务器是否启动gzip等压缩
-    inline: true,
-    hot: true,
+  /*  inline: true,
+    hot: true,*/
     port: 8088        // 开发服务器监听的端口
   },
 
