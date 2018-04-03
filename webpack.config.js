@@ -9,6 +9,12 @@ module.exports = {
     index: './src/index.js',
     vendor: ['lodash']
   },
+  output: {
+    path: path.join(__dirname, "dist"),
+    publicPath: '/',
+    // filename: "[name].js",
+    // chunkFilename: "[name].chunk.js"
+  },
   plugins: [
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
@@ -54,7 +60,7 @@ module.exports = {
       {
         test: /\.(html)$/,
         use: 'html-withimg-loader',
-        include: path.join(__dirname,'./src'),
+        include: path.join(__dirname, './src'),
         exclude: /node_modules/
       }
     ]
@@ -66,7 +72,8 @@ module.exports = {
       minChunks: 1,              // 最小 chunk ，默认1
       maxAsyncRequests: 1,       // 最大异步请求数， 默认1
       maxInitialRequests: 1,    // 最大初始化请求书，默认1
-      name: () => {},              // 名称，此选项课接收 function
+      name: () => {
+      },              // 名称，此选项课接收 function
       cacheGroups: {                 // 这里开始设置缓存的 chunks
         priority: "0",                // 缓存组优先级 false | object |
         vendor: {                   // key 为entry中定义的 入口名称
@@ -83,17 +90,12 @@ module.exports = {
       }
     }
   },
-  output: {
-    path: path.join(__dirname, "dist"),
-    // filename: "[name].js",
-    // chunkFilename: "[name].chunk.js"
-  },
-  devServer:{
+  devServer: {
     contentBase: path.resolve(__dirname, 'src'),// 配置开发服务运行时的文件根目录
     host: 'localhost',// 开发服务器监听的主机地址
     compress: true,   // 开发服务器是否启动gzip等压缩
-  /*  inline: true,
-    hot: true,*/
+    inline: false,
+    hotOnly: true,
     port: 8088        // 开发服务器监听的端口
   },
 
