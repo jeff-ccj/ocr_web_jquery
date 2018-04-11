@@ -1,0 +1,251 @@
+input[type=file] {
+  color: transparent;
+  font-size: 12pt;
+  height: 30px;
+  width: 100px;
+}
+
+.icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+}
+
+.header {
+  height: 60px;
+  background: #4d317c;
+  .logo {
+    color: #fff;
+    font-size: 24px;
+    line-height: 45px;
+
+    img {
+      width: 40px;
+      height: 40px;
+      margin: 10px 0 10px 20px;
+      vertical-align: top;
+    }
+
+    span {
+      display: inline-block;
+      margin-top: 6px;
+      font-weight: 300;
+    }
+  }
+  .tool-btn {
+    position: absolute;
+    right: 30px;
+    top: 15px;
+  }
+}
+
+.main {
+  padding-top: 60px;
+
+  .data-wrapper {
+    position: absolute;
+    top: 120px;
+    left: 25px;
+    right: 25px;
+    bottom: 70px;
+
+    .del-btn {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      background: url("../img/delete.png") no-repeat;
+      overflow: hidden;
+      text-indent: -999rem;
+    }
+  }
+
+  .data-info {
+    display: none;
+    position: absolute;
+    right: 30px;
+    bottom: 10px;
+    font-size: 14px;
+    .data-info-list {
+      display: inline-block;
+      margin-right: 10px;
+      span {
+        color: #ff9300;
+      }
+    }
+  }
+}
+
+.upload-file {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  transition: all 500ms ease-out;
+
+  &.uploaded {
+    left: 80px;
+    top: 25px;
+    .icon-upload {
+      opacity: 0;
+      //display: none;
+    }
+  }
+  .icon-upload {
+    width: 112px;
+    height: 128px;
+    background: url("../img/bg.png") no-repeat;
+  }
+  .upload-file-btn {
+    position: relative;
+    display: block;
+    width: 110px;
+    height: 40px;
+    margin-top: 10px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #7352bf;
+    color: #ffffff;
+    font-size: 14px;
+    border-radius: 4px;
+    text-decoration: none;
+    input {
+      position: absolute;
+      opacity: 0;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      width: 110px;
+      height: 40px;
+      cursor: pointer;
+    }
+  }
+}
+@-webkit-keyframes progress-bar-stripes{from{background-position:40px 0}to{background-position:0 0}}@-o-keyframes progress-bar-stripes{from{background-position:40px 0}to{background-position:0 0}}@keyframes progress-bar-stripes{from{background-position:40px 0}to{background-position:0 0}}
+
+//加载动画
+.layui-progress-big {
+  overflow: hidden;
+  .layui-progress-bar {
+    width: 100%;
+    transform: translateX(-100%);
+    //transition: all 100ms ease-out;
+    animation: reverse progress-bar-stripes 0.50s linear infinite;
+    background-color: #562c7c;
+    background-image: linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent);
+    -webkit-background-size: 40px 40px;
+    background-size: 40px 40px;
+    .layui-progress-text {
+      padding: 0 3px;
+    }
+  }
+}
+
+// 导出反馈
+.export-then {
+  padding-top: 20px;
+  text-align: center;
+  .export-icon {
+    display: inline-block;
+    width: 60px;
+    height: 60px;
+    background: url("../img/xl-emo.png") no-repeat;
+  }
+  .export-txt {
+    font-size: 18px;
+    color: #31a664;
+  }
+}
+
+//登录
+.login {
+  width: 400px;
+  margin: 100px auto 0;
+  padding: 50px 60px 50px 30px;
+  border: 1px solid #e1e1e1;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
+
+  .form-row {
+    margin-bottom: 22px;
+    line-height: 40px;
+    overflow: hidden;
+    .form-label {
+      float: left;
+      width: 100px;
+      text-align: right;
+      vertical-align: middle;
+      font-size: 14px;
+      color: #606266;
+      line-height: 40px;
+      padding: 0 12px 0 0;
+      box-sizing: border-box;
+    }
+    .form-content {
+      margin-left: 100px;
+      .form-txt {
+        display: inline-block;
+        width: 100%;
+        height: 40px;
+        padding: 0 15px;
+        -webkit-appearance: none;
+        background-color: #fff;
+        border-radius: 4px;
+        border: 1px solid #dcdfe6;
+        box-sizing: border-box;
+        color: #606266;
+        line-height: 1;
+        outline: 0;
+        transition: border-color .2s cubic-bezier(.645, .045, .355, 1);
+        font-size: 14px;
+        &.captcha-txt {
+          display: block;
+          width: 170px;
+          margin-right: 145px;
+        }
+      }
+    }
+  }
+  .form-btn {
+    display: block;
+    -webkit-appearance: none;
+    text-align: center;
+    box-sizing: border-box;
+    outline: 0;
+    margin: 0;
+    transition: .1s;
+    font-weight: 500;
+    padding: 12px 20px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &.login-btn {
+      width: 100%;
+      color: #fff;
+      background-color: #7256bc;
+      border-color: #7256bc;
+    }
+  }
+  .captcha-btn {
+    float: right;
+    width: 115px;
+    height: 40px;
+    cursor: pointer;
+
+    &.send-btn {
+      background: #fff;
+      border: 1px solid #dcdfe6;
+      color: #606266;
+      &:hover {
+        color: #7256BC;
+        border-color: rgb(213, 204, 235);
+        background-color: rgb(241, 238, 248)
+      }
+    }
+  }
+}
+
+

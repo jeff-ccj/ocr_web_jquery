@@ -1,51 +1,82 @@
 const path = require('path');
 const webpack = require("webpack");
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = {
   entry: {
-    index: './src/index.js',
+    index: './src/js/index.js',
+    login: './src/js/login.js',
     vendor: ['lodash']
   },
   output: {
     path: path.join(__dirname, "dist"),
-    publicPath: '/',
+    publicPath: '/'
     // filename: "[name].js",
     // chunkFilename: "[name].chunk.js"
   },
+  watch: true,
+  node: {
+    fs: 'empty'
+  },
+  watchOptions: {
+    ignored: /node_modules/, //忽略不用监听变更的目录
+    aggregateTimeout: 500,  // 文件发生改变后多长时间后再重新编译（Add a delay before rebuilding once the first file changed ）
+    poll:1000               //每秒询问的文件变更的次数
+  },
+  devtool: 'inline-source-map',
+  resolve: {
+    modules: [
+      "node_modules"
+    ]
+  },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
     new CleanWebpackPlugin(['dist']),
     new HtmlWebpackPlugin({
       template: './src/index.html',   // 指定产出的模板
-      filename: 'index.html',          // 产出的文件名
+      filename: 'index.html',          // 产出的文件名,
+      inject: true,
       chunks: ['common', 'base'],     // 在产出的HTML文件里引入哪些代码块
-      hash: true,                     // 名称是否哈希值
-      title: 'base',                  // 可以给模板设置变量名，在html模板中调用 htmlWebpackPlugin.options.title 可以使用
-      minify: {                       // 对html文件进行压缩
-        removeAttributeQuotes: true // 移除双引号
-      }
     }),
-    new webpack.NamedModulesPlugin(),
-    new webpack.HotModuleReplacementPlugin()
+    new HtmlWebpackPlugin({
+      template: './src/login.html',   // 指定产出的模板
+      filename: 'login.html',          // 产出的文件名,
+      inject: true,
+      chunks: ['common', 'base'],     // 在产出的HTML文件里引入哪些代码块
+    }),
+    new ExtractTextPlugin('css/style.css')
   ],
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader?sourceMap']
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'postcss-loader']
+        })
       },
       {
-        test: /\.less$/,
-        use: ['css-loader?minimize', 'less-loader']
+        test: /\.less$/i,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: ['css-loader', 'postcss-loader', 'less-loader']
+        })
       },
       {
         test: /\.js$/,
-        exclude: /node_modules/,
+        exclude: /(node_modules|bower_components|src\/js\/lib)/,
         use: {
-          loader: "babel-loader"
-        }
+          loader: "babel-loader?cacheDirectory=true"
+        },
+        include: path.resolve(__dirname, 'src'),
       },
       {
         test: /\.(png|jpg|gif|svg|bmp|eot|woff|woff2|ttf)$/,
@@ -58,7 +89,7 @@ module.exports = {
         }
       },
       {
-        test: /\.(html)$/,
+        test: /\.(html|html)$/,
         use: 'html-withimg-loader',
         include: path.join(__dirname, './src'),
         exclude: /node_modules/
@@ -67,7 +98,7 @@ module.exports = {
   },
   optimization: {
     splitChunks: {
-      chunks: "initial",         // 必须三选一： "initial" | "all"(默认就是all) | "async"
+      chunks: "all",         // 必须三选一： "initial" | "all"(默认就是all) | "async"
       minSize: 0,                // 最小尺寸，默认0
       minChunks: 1,              // 最小 chunk ，默认1
       maxAsyncRequests: 1,       // 最大异步请求数， 默认1
@@ -91,12 +122,17 @@ module.exports = {
     }
   },
   devServer: {
-    contentBase: path.resolve(__dirname, 'src'),// 配置开发服务运行时的文件根目录
+    historyApiFallback: true,
+    contentBase: false,
+    // contentBase: path.resolve(__dirname, 'src'),// 配置开发服务运行时的文件根目录
     host: 'localhost',// 开发服务器监听的主机地址
     compress: true,   // 开发服务器是否启动gzip等压缩
-    inline: false,
-    hotOnly: true,
+    inline: true,
+    // hot: true,
+    // hotOnly: true,
     port: 8088        // 开发服务器监听的端口
   },
 
 };
+
+console.log(path.resolve(__dirname, 'src'))
