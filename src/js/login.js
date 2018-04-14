@@ -8,8 +8,7 @@ import './lib/layui/layui.all'
 $(function () {
   // 如果已经登录
   let iExTime = 2 * 24 * 60 * 60 * 1000
-  if (localStorage.token && localStorage.tokenCreateDate ||
-    (+localStorage.tokenCreateDate + iExTime) > +new Date()) {
+  if (localStorage.token && localStorage.tokenCreateDate && (+localStorage.tokenCreateDate + iExTime) > +new Date()) {
     location.href = './index.html'
   }
   // 获取图片验证码
