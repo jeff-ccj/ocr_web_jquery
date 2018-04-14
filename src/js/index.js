@@ -18,6 +18,7 @@ if (!localStorage.token || !localStorage.tokenCreateDate ||
 const fn = {
   // 存储解析后数据
   rowData: [],
+  rowRepetitionData: [],
 
   // 获取数据规则
   formatTarget: [
@@ -138,7 +139,10 @@ const fn = {
       limit: '100',
       height: $('.data-wrapper').height(),
       cols: [[ //表头
-        {type: 'checkbox', width:60, fixed: 'left'},
+        {type: 'checkbox', width:60, fixed: 'left', templet: function(item) {
+            return `<input type="checkbox" ${item.isRepetition ? "disabled" : ''} />123123`
+          }
+        },
         {type: 'numbers', title: '序号', width:60, fixed: 'left'},
         {field: 'licenseNum', title: '车牌号', width:120, fixed: 'left'},
         {field: 'createDate', title: '开票日期', width:150},
@@ -161,7 +165,7 @@ const fn = {
     // 全选设置
     layui.table.on('checkbox(pdfData)', function(obj){
       if (obj.type === 'all') {
-        fn.rowData.map(item => {item.LAY_CHECKED = obj.checked})
+        fn.rowData.map(item => {if(item.isRepetition) item.LAY_CHECKED = obj.checked})
       }
     })
     layui.table.on('tool(pdfData)', function(obj){
@@ -185,7 +189,7 @@ const fn = {
   exportData () {
     let aData = []
     fn.rowData.map(item => {
-      if (item.LAY_CHECKED) {
+      if (item.LAY_CHECKED && !item.isRepetition) {
         aData.push([
           item['licenseNum'],
           item['createDate'],
@@ -352,7 +356,10 @@ $(function () {
             })
             let loadPage = function (pageNum) {
               if (fn.cancelUpload) {
+                // 根据当前数据渲染
                 fn.renderTable()
+                // 设置总数
+                fn.setStatisticsData(statisticsData)
                 return false
               }
               doc.getPage(pageNum).then(function (page) {
@@ -432,6 +439,8 @@ $(function () {
                       statisticsData.taxPriceCount += +(_row['taxCount'] || 0)
                     } else { // 记录重复数量
                       statisticsData.iRepetitionCount++
+                      _row.isRepetition = true
+                      fn.rowRepetitionData.push(_row)
                     }
                   } else {
                     ++errFileCount
@@ -444,6 +453,8 @@ $(function () {
                   }
                   if (++analyzeIndex === statisticsData.iFileLength) {
                     statisticsData.analyzeTime = performance.now() - startAnalyzeTime
+                    // 把重复的数据放在后面
+                    fn.rowData = fn.rowData.concat(fn.rowRepetitionData)
                     // 解析完成后渲染表格
                     fn.renderTable()
                     // 设置总数
