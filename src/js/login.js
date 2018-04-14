@@ -6,11 +6,19 @@ import '../css/main.less'
 import './lib/layui/layui.all'
 
 $(function () {
+  // 如果已经登录
+  let iExTime = 2 * 24 * 60 * 60 * 1000
+  if (localStorage.token && localStorage.tokenCreateDate ||
+    (+localStorage.tokenCreateDate + iExTime) > +new Date()) {
+    location.href = './index.html'
+  }
   // 获取图片验证码
-  var $captchaImg = $('#captchaImg')
-  function changeCaptchaImg() {
+  let $captchaImg = $('#captchaImg')
+
+  function changeCaptchaImg () {
     $captchaImg.prop('src', '/api/user/captcha?' + Math.random())
   }
+
   $captchaImg.on('click', changeCaptchaImg)
   changeCaptchaImg()
 

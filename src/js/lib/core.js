@@ -12989,7 +12989,9 @@ module.exports = function () {
           var parser = new _dom_utils.SimpleXMLParser();
           data = parser.parseFromString(data);
           this._metadata = Object.create(null);
-          this._parse(data);
+          if(data.documentElement){
+            this._parse(data);
+          }
         }
 
         _createClass(Metadata, [{
@@ -13029,6 +13031,7 @@ module.exports = function () {
           key: '_parse',
           value: function _parse (domDocument) {
             var rdf = domDocument.documentElement;
+            console.log(domDocument)
             if (rdf.nodeName.toLowerCase() !== 'rdf:rdf') {
               rdf = rdf.firstChild;
               while (rdf && rdf.nodeName.toLowerCase() !== 'rdf:rdf') {

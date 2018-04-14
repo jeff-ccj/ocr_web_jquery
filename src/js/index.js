@@ -6,6 +6,7 @@ import axios from 'axios'
 import './lib/layui/layui.all'
 import analyzeJS from './lib/analyze'
 import CoreJS from './lib/core'
+
 window.analyzeJS = analyzeJS
 
 // 验证登录
@@ -101,7 +102,7 @@ const fn = {
       minX: 50,
       minY: 0,
       validate: (val) => {
-        return /^[\d|\.{0,1}]*$/i.test(val)
+        return /^[\d|.{0,1}]*$/i.test(val)
       },
       default: '0'
     },
@@ -112,7 +113,7 @@ const fn = {
       minX: 50,
       minY: 12,
       validate: (val) => {
-        return /^[\d|\.{0,1}]*$/i.test(val)
+        return /^[\d|.{0,1}]*$/i.test(val)
       }
     },
     {
@@ -122,7 +123,7 @@ const fn = {
       minX: 20,
       minY: 0,
       format: (val) => {
-        return val.replace(/不征税/g, '0%')
+        return val.replace(/(不\W+)/g, '0%')
       },
       default: '0%'
     }
@@ -139,36 +140,39 @@ const fn = {
       limit: '100',
       height: $('.data-wrapper').height(),
       cols: [[ //表头
-        {type: 'checkbox', width:60, fixed: 'left', templet: function(item) {
+        {
+          type: 'checkbox', width: 60, fixed: 'left', templet: function (item) {
             return `<input type="checkbox" ${item.isRepetition ? "disabled" : ''} />123123`
           }
         },
-        {type: 'numbers', title: '序号', width:60, fixed: 'left'},
-        {field: 'licenseNum', title: '车牌号', width:120, fixed: 'left'},
-        {field: 'createDate', title: '开票日期', width:150},
-        {field: 'throughDateBegin', title: '通行日期起', width:130},
-        {field: 'throughDateEnd', title: '通行日期止', width:130},
-        {field: 'invoiceCode', title: '发票代码', width:200},
-        {field: 'invoiceId', title: '发票号码', width:120},
-        {field: 'buyName', title: '购方名称', width:300},
-        {field: 'sellerName', title: '销方名称', width:300},
-        {field: 'unTaxMoney', title: '未税金额', width:100},
-        {field: 'taxMoney', title: '进项税额', width:100},
-        {field: 'taxCount', title: '税价合计', width:100},
+        {type: 'numbers', title: '序号', width: 60, fixed: 'left'},
+        {field: 'licenseNum', title: '车牌号', width: 120, fixed: 'left'},
+        {field: 'createDate', title: '开票日期', width: 150},
+        {field: 'throughDateBegin', title: '通行日期起', width: 130},
+        {field: 'throughDateEnd', title: '通行日期止', width: 130},
+        {field: 'invoiceCode', title: '发票代码', width: 200},
+        {field: 'invoiceId', title: '发票号码', width: 120},
+        {field: 'buyName', title: '购方名称', width: 300},
+        {field: 'sellerName', title: '销方名称', width: 300},
+        {field: 'unTaxMoney', title: '未税金额', width: 100},
+        {field: 'taxMoney', title: '进项税额', width: 100},
+        {field: 'taxCount', title: '税价合计', width: 100},
         {field: 'taxPercent', title: '税率'},
-        {fixed: 'right', event: 'delete', width:60, align:'center', toolbar: '#tableTool'} //这里的toolbar值是模板元素的选择器
+        {fixed: 'right', event: 'delete', width: 60, align: 'center', toolbar: '#tableTool'} //这里的toolbar值是模板元素的选择器
       ]],
       limits: [100, 200, 500, 1000],
       data: fn.rowData,
       page: true
     })
     // 全选设置
-    layui.table.on('checkbox(pdfData)', function(obj){
+    layui.table.on('checkbox(pdfData)', function (obj) {
       if (obj.type === 'all') {
-        fn.rowData.map(item => {if(item.isRepetition) item.LAY_CHECKED = obj.checked})
+        fn.rowData.map(item => {
+          if (item.isRepetition) item.LAY_CHECKED = obj.checked
+        })
       }
     })
-    layui.table.on('tool(pdfData)', function(obj){
+    layui.table.on('tool(pdfData)', function (obj) {
       if (obj.event === 'delete') {
         obj.del()
         fn.rowData.map((item, i) => {
@@ -176,10 +180,10 @@ const fn = {
         })
         fn.afreshStatisticsData()
         // layui.table.reload('dataTable')
-       /* layer.confirm('确认删除该行数据吗', function(index){
-          obj.del() //删除对应行（tr）的DOM结构，并更新缓存
-          layer.close(index)
-        }) */
+        /* layer.confirm('确认删除该行数据吗', function(index){
+           obj.del() //删除对应行（tr）的DOM结构，并更新缓存
+           layer.close(index)
+         }) */
       }
     })
 
@@ -230,7 +234,7 @@ const fn = {
 
   // 设置进度条
   setProgressBar (num = 1) {
-    if (fn.progressBarTimer && num != 1) return
+    if (fn.progressBarTimer && num !== 1) return
     // if (performance.now() - fn.progressBarTimer < 100 && num != 1) return
     // fn.progressBarTimer = performance.now()
     fn.progressBarTimer = true
@@ -256,7 +260,7 @@ const fn = {
   },
 
   // 重新统计总数
-  afreshStatisticsData (){
+  afreshStatisticsData () {
     let statisticsData = {
       untaxedCount: 0, // 未税金额汇总
       taxedCount: 0, // 进项税金额汇总
@@ -281,7 +285,7 @@ const fn = {
           break
         case 'loadTime':
         case 'analyzeTime':
-          statisticsDataItem = (statisticsDataItem/1000).toFixed(2)
+          statisticsDataItem = (statisticsDataItem / 1000).toFixed(2)
           break
         default:
           statisticsDataItem = statisticsDataItem.toFixed(2)
@@ -294,7 +298,7 @@ const fn = {
   // 停顿时间
   sleep (time) {
     return new Promise(function (resolve) {
-      setTimeout(()=> {
+      setTimeout(() => {
         resolve()
       }, time)
     })
@@ -333,7 +337,7 @@ $(function () {
       content: '<div class="layui-progress layui-progress-big" lay-showPercent="true">' +
       '<div class="layui-progress-bar" id="uploadBar"><span id="uploadBarTxt" class="layui-progress-text">0%</span></div>' +
       '</div>',
-      cancel: function(index, layero){
+      cancel: function (index, layero) {
         fn.cancelUpload = true
       }
     })
@@ -342,8 +346,8 @@ $(function () {
 
       let fileReader = new FileReader()
 
-      fileReader.onload = (function(fileItem) {
-        return function(e) {
+      fileReader.onload = (function (fileItem) {
+        return function (e) {
           if (++loadedIndex === statisticsData.iFileLength) {
             statisticsData.loadTime = performance.now() - loadStartTime
           }
@@ -352,6 +356,7 @@ $(function () {
           CoreJS.getDocument(typedArray).then((doc) => {
             let pdfVersion = ''
             let lastPromise = doc.getMetadata().then((data) => {
+              console.log(data)
               pdfVersion = data.info.PDFFormatVersion
             })
             let loadPage = function (pageNum) {
